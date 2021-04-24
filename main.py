@@ -33,6 +33,8 @@ def add():
     if channel in {"alpha", "beta", "basics"}:
         queue_dict[channel].put(url)
         return "{}, {}, {}!".format(url, channel, auth.current_user())
+    else:
+        return "channel option is not correct. options are basics/alpha/beta"
 
 
 @app.route("/read/", methods=["POST"])
@@ -44,6 +46,8 @@ def read():
             return "Nothing left in queue"
         url = queue_dict[channel].get(channel)
         return "{}, {}, {}!".format(url, channel, auth.current_user())
+    else:
+        return "channel option is not correct. options are basics/alpha/beta"
 
 
 if __name__ == "__main__":

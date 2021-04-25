@@ -1,4 +1,4 @@
-import queue
+from collections import deque
 
 
-queue_dict = {"basics": queue.Queue(), "alpha": queue.Queue(), "beta": queue.Queue()}
+queue_dict = {"basics": deque(), "alpha": deque(), "beta": deque()}

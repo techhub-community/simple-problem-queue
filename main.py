@@ -31,7 +31,7 @@ def add():
     url = request.form["url"]
     channel = request.form["channel"]
     if channel in {"alpha", "beta", "basics"}:
-        queue_dict[channel].put(url)
+        queue_dict[channel].append(url)
         return "{}, {}, {}!".format(url, channel, auth.current_user())
     else:
         return "channel option is not correct. options are basics/alpha/beta"
@@ -42,12 +42,21 @@ def add():
 def read():
     channel = request.form["channel"]
     if channel in {"alpha", "beta", "basics"}:
-        if queue_dict[channel].empty():
+        if len(queue_dict[channel]) == 0:
             return "Nothing left in queue"
-        url = queue_dict[channel].get(channel)
+        url = queue_dict[channel].popleft()
         return "{}, {}, {}!".format(url, channel, auth.current_user())
     else:
         return "channel option is not correct. options are basics/alpha/beta"
+
+
+@app.route("/size/", methods=["GET"])
+def size():
+    return {
+        "alpha": len(queue_dict["alpha"]),
+        "beta": len(queue_dict["beta"]),
+        "basics": len(queue_dict["basics"]),
+    }
 
 
 if __name__ == "__main__":

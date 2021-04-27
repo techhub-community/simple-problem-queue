@@ -3,6 +3,8 @@ import json
 from flask_httpauth import HTTPTokenAuth
 from simple_queue import queue_dict
 import sys
+import os
+
 
 app = Flask(__name__)
 auth = HTTPTokenAuth(scheme="Bearer")
@@ -17,6 +19,15 @@ except:
 def verify_token(token):
     if token in tokens:
         return tokens[token]
+
+
+@app.before_first_request
+def before_first_request_func():
+    global simple_queue
+    backups = os.listdir('queue_backup')
+    if len(backups):
+        backups.sort()
+        simple_queue = pickle.load(f"queue_backup/{backups[-1]}")
 
 
 @app.route("/")
@@ -52,6 +63,15 @@ def read():
 
 @app.route("/size/", methods=["GET"])
 def size():
+    return {
+        "alpha": len(queue_dict["alpha"]),
+        "beta": len(queue_dict["beta"]),
+        "basics": len(queue_dict["basics"]),
+    }
+
+
+@app.route("/problemset/", methods=["GET"])
+def problemset():
     return {
         "alpha": len(queue_dict["alpha"]),
         "beta": len(queue_dict["beta"]),

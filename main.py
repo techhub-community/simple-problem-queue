@@ -1,13 +1,17 @@
-from flask import Flask, request
 import json
-from flask_httpauth import HTTPTokenAuth
-from simple_queue import queue_dict
-import sys
 import os
+import pickle
+import sys
 
+from flask import Flask, request
+from flask_httpauth import HTTPTokenAuth
+
+from utils import new_backup_name
+from simple_queue import queue_dict
 
 app = Flask(__name__)
 auth = HTTPTokenAuth(scheme="Bearer")
+
 try:
     tokens = json.load(open("secrets.json"))
 except:
@@ -23,11 +27,26 @@ def verify_token(token):
 
 @app.before_first_request
 def before_first_request_func():
-    global simple_queue
+    global queue_dict
     backups = os.listdir('queue_backup')
+    backups = [x for x in backups if ".pkl" in x]
     if len(backups):
         backups.sort()
-        simple_queue = pickle.load(f"queue_backup/{backups[-1]}")
+        queue_dict = pickle.load(open(f"queue_backup/{backups[-1]}", 'rb'))
+    return True
+
+
+@app.route("/backup/", methods=["GET"])
+@auth.login_required
+def backup():
+    name = new_backup_name()
+    try:
+        with open(f"queue_backup/{name}", 'wb') as outf:
+            pickle.dump(queue_dict, outf)
+        return f"Done with filename {name}"
+    except:
+        return "Failed backup"
+
 
 
 @app.route("/")

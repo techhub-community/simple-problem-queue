@@ -1,0 +1,7 @@
+__pycache__
+.idea
+.vscode
+secrets.json
+cron.py
+queue_backup/*.pkl
+last_five_backup/*.pkl

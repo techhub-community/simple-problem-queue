@@ -17,7 +17,7 @@ last_five = LastFive()
 try:
     tokens = json.load(open("secrets.json"))
 except:
-    print('create secret.json file in this format {"token" : "username"}')
+    print('create secrets.json file in this format {"token" : "username"}')
     sys.exit(1)
 
 

@@ -4,3 +4,4 @@ __pycache__
 secrets.json
 cron.py
 queue_backup/*.pkl
+last_five_backup/*.pkl

@@ -130,7 +130,7 @@ class LastFive:
             {
                 "beta": list(self.beta)[::-1],
                 "alpha": list(self.alpha)[::-1],
-                "basics": list(self.alpha)[::-1],
+                "basics": list(self.basics)[::-1],
             }
         )
 
